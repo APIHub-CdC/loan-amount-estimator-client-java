@@ -107,7 +107,7 @@ keytool -list -keystore ${KEYSTORE_FILE} \
     <p align="center">
       <img src="https://github.com/APIHub-CdC/imagenes-cdc/blob/master/applications.png">
     </p>
- 5. Al abrirse la ventana emergente, seleccionar el certificado previamente creado y dar clic en el botón "**Cargar**":
+ 5. Al abrirse la ventana, seleccionar el certificado previamente creado y dar clic en el botón "**Cargar**":
     <p align="center">
       <img src="https://github.com/APIHub-CdC/imagenes-cdc/blob/master/upload_cert.png">
     </p>
@@ -121,7 +121,7 @@ keytool -list -keystore ${KEYSTORE_FILE} \
     <p align="center">
         <img src="https://github.com/APIHub-CdC/imagenes-cdc/blob/master/applications.png">
     </p>
- 5. Al abrirse la ventana emergente, dar clic al botón "**Descargar**":
+ 5. Al abrirse la ventana, dar clic al botón "**Descargar**":
     <p align="center">
         <img src="https://github.com/APIHub-CdC/imagenes-cdc/blob/master/download_cert.png">
     </p>
@@ -140,7 +140,7 @@ key_password=your_super_secure_password
 
 En el archivo ApiTest.java, que se encuentra en ***src/test/java/io/lae/client/api/***. Se deberá modificar los datos de la petición y de la URL para el consumo de la API en setBasePath("the_url"), como se muestra en el siguiente fragmento de código con los datos correspondientes:
 
-> **NOTA:** Los datos de la petición son solo representativos.
+> **NOTA:** Los datos de la siguiente petición son solo representativos.
 
 ```java
 public class ApiTest {
