@@ -46,19 +46,22 @@ public class SignerInterceptor implements Interceptor {
 		logger.debug("Generating signed ...");
 		String payload = null;
 		List<String> pathSegments = originalRequest.url().encodedPathSegments();
-		if (pathSegments.size() == 4) {
+
+		if (originalRequest.method() == "GET") {
 			payload = pathSegments.get(2);
 		} else {
 			payload = bodyToString(originalRequest);
 		}
+
 		String signature = this.signer.signPayload(payload);
 		if (signature == null) {
 			logger.error("Could not sign the payload");
+		} else {
+			logger.debug("Signature: " + signature);
 		}
-		logger.debug("Signature: " + signature);
 		return originalRequest.newBuilder().header("x-signature", signature)
 				.method(originalRequest.method(), originalRequest.body()).build();
-	}
+	}	
 	private Response procesarVerificado(Response response) {
 		logger.debug("Verifying signed ...");
 		ResponseBody bodyAsStream = null;
