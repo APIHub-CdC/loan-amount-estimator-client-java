@@ -109,7 +109,7 @@ keytool -list -keystore ${KEYSTORE_FILE} \
     </p>
  5. Al abrirse la ventana emergente, seleccionar el certificado previamente creado y dar clic en el botón "**Cargar**":
     <p align="center">
-      <img src="https://github.com/APIHub-CdC/imagenes-cdc/blob/master/upload_cert.png" width="268">
+      <img src="https://github.com/APIHub-CdC/imagenes-cdc/blob/master/upload_cert.png">
     </p>
 
 ### Paso 3. Descarga del certificado de Círculo de Crédito dentro del portal de desarrolladores
@@ -123,7 +123,7 @@ keytool -list -keystore ${KEYSTORE_FILE} \
     </p>
  5. Al abrirse la ventana emergente, dar clic al botón "**Descargar**":
     <p align="center">
-        <img src="https://github.com/APIHub-CdC/imagenes-cdc/blob/master/download_cert.png" width="268">
+        <img src="https://github.com/APIHub-CdC/imagenes-cdc/blob/master/download_cert.png">
     </p>
 
 ### Paso 4. Modificar archivo de configuraciones
@@ -136,31 +136,76 @@ keystore_password=your_super_secure_keystore_password
 key_alias=cdc
 key_password=your_super_secure_password
 ```
-### Paso 5. Modificar URL
+### Paso 5. Modificar URL y datos de petición
 
-En el archivo ApiTest.java, que se encuentra en ***src/test/java/io/LAE/client/api/***. Se deberá modificar los datos de la petición y de la URL para el consumo de la API en setBasePath("the_url"), como se muestra en el siguiente fragmento de código con los datos correspondientes:
+En el archivo ApiTest.java, que se encuentra en ***src/test/java/io/lae/client/api/***. Se deberá modificar los datos de la petición y de la URL para el consumo de la API en setBasePath("the_url"), como se muestra en el siguiente fragmento de código con los datos correspondientes:
+
+> **NOTA:** Los datos de la petición son solo representativos.
 
 ```java
-
-private Logger logger = LoggerFactory.getLogger(ApiTest.class.getName());
-private final LaeApi api = new LaeApi();
-private ApiClient apiClient = null;
-
-@Before()
-public void setUp() {
-	this.apiClient = api.getApiClient();
-	this.apiClient.setBasePath("the_url");
-	OkHttpClient okHttpClient = new OkHttpClient().newBuilder()
-		    .readTimeout(30, TimeUnit.SECONDS)
-		    .addInterceptor(new SignerInterceptor())
-		    .build();
-	apiClient.setHttpClient(okHttpClient);
-}
+public class ApiTest {
 	
-@Test
-public void getApoTest() throws ApiException {
-}
+	private Logger logger = LoggerFactory.getLogger(ApiTest.class.getName());
+	private final LoanAmountEstimatorApi api = new LoanAmountEstimatorApi();
+	private String xApiKey = "your_api_key";
+	private String username = "your_username";
+	private String password = "your_password";	
+	
+	private ApiClient apiClient = null;
 
+	@Before()
+	public void setUp() {
+		this.apiClient = api.getApiClient();
+		this.apiClient.setBasePath("the_url");
+		OkHttpClient okHttpClient = new OkHttpClient().newBuilder()
+			    .readTimeout(30, TimeUnit.SECONDS)
+			    .addInterceptor(new SignerInterceptor())
+			    .build();
+		apiClient.setHttpClient(okHttpClient);
+	}
+
+	@Test
+	public void getLAEByPersonTest() throws ApiException {
+		PeticionPersona request = new PeticionPersona();
+		Persona persona = new Persona();
+		DomicilioPeticion domicilio = new DomicilioPeticion();
+		
+		persona.setPrimerNombre("JUAN");
+		persona.setApellidoPaterno("PRUEBA");
+		persona.setApellidoMaterno("CUATRO");
+		persona.setFechaNacimiento("1980-01-04");
+		persona.setRFC("PUAC800104");
+		
+		domicilio.setDireccion("INSURGENTES SUR 1004");
+		domicilio.setColoniaPoblacion("INSURGENTES SUR");
+		domicilio.setDelegacionMunicipio("CIUDAD DE MEXICO");
+		domicilio.setCiudad("CIUDAD DE MEXICO");
+		domicilio.setEstado(CatalogoEstados.CDMX);
+		domicilio.setCP("11230");
+    	
+		persona.setDomicilio(domicilio);
+		
+		request.setFolioOtorgante("1");
+		request.setSegmento(CatalogoSegmento.PP);
+		request.setPersona(persona);
+		
+		Respuesta response = api.getLAEByPerson(this.xApiKey, this.username, this.password, request);
+		logger.info(response.toString());
+	}
+
+	@Test
+	public void getLAEByFolioConsultaTest() throws ApiException {
+		PeticionFolioConsulta request = new PeticionFolioConsulta();
+		
+		request.setFolioOtorgante("1");
+		request.setSegmento(CatalogoSegmento.PP);
+		request.setFolioConsulta("386636538");
+		
+		Respuesta response = api.getLAEByFolioConsulta(this.xApiKey, this.username, this.password, request);
+		logger.info(response.toString());
+	}
+
+}
 
 ```
 ### Paso 6. Ejecutar la prueba unitaria
